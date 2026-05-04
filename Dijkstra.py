@@ -38,10 +38,23 @@ def generate_graph(num_nodes, weight_range=(1, 10)):
     
     matrix = np.random.randint(weight_range[0], weight_range[1], size = (num_nodes, num_nodes))
     
+    
     matrix = (matrix + matrix.T) // 2
     np.fill_diagonal(matrix, 0)
     
-    return matrix
+    py_matrix = matrix.tolist()
+    
+    return py_matrix
+
+def matrix_to_list(matrix):
+    adj_list = defaultdict(list)
+    
+    for i, row in enumerate(matrix):
+        for j, val in enumerate(row):
+            if val != 0:
+                adj_list[str(i + 1)].append([str(j + 1), val])
+        
+    return dict(adj_list)
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -78,7 +91,6 @@ def dijkstra_list(adj_list, src):
     
     print(dist)
         
-  
     return None
 
 #For adjacency matrix, data supplied as a 2D matrix, each row-column pair being an edge.    
@@ -104,7 +116,10 @@ def dijkstra_matrix(matrix, src):
                 new_dist = dist[u] + matrix[u][neighbor]
                 if new_dist < dist[neighbor]:
                     dist[neighbor] = new_dist
+                    
+    
     print(dist)
+    
     return None
 
 
@@ -132,15 +147,18 @@ edges4 = [('1', '2', 3), ('1', '3', 2), ('1', '4', 6), ('1', '5', 5), ('1', '6',
 list4 = create_adjacency_list(edges4)
 matrix4 = create_adjacency_matrix(edges4)
 
-matrix5 = generate_graph(15)
-
-print(matrix5)
+matrix5 = generate_graph(10)
+list5 = matrix_to_list(matrix5)
+#print(matrix5)
+#print()
+#print(list5)
 #-------------------------------------------------------------------------------
 
 dijkstra_list(list1, 'A')
 dijkstra_list(list2, '1')
 dijkstra_list(list3, 'A')
 dijkstra_list(list4, '1')
+dijkstra_list(list5, '1')
 
 dijkstra_matrix(matrix1, 0)
 dijkstra_matrix(matrix1, 1)
@@ -149,3 +167,4 @@ dijkstra_matrix(matrix1, 2)
 dijkstra_matrix(matrix2, 0)
 dijkstra_matrix(matrix3, 0)
 dijkstra_matrix(matrix4, 0)
+dijkstra_matrix(matrix5, 0)
