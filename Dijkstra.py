@@ -1,4 +1,6 @@
 from collections import defaultdict 
+import sys
+import numpy as np
 
 #-------------------------------------------------------------------------------
 #Data Structure Methods
@@ -32,6 +34,80 @@ def create_adjacency_matrix(edges):
     
     return matrix
     
+def generate_graph(num_nodes, weight_range=(1, 10)):
+    
+    matrix = np.random.randint(weight_range[0], weight_range[1], size = (num_nodes, num_nodes))
+    
+    matrix = (matrix + matrix.T) // 2
+    np.fill_diagonal(matrix, 0)
+    
+    return matrix
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+#Dijkstra's Algorithm Implementation
+#-------------------------------------------------------------------------------
+
+#For adjacency list, data supplied as a dictionary: Nodes are the Key, contents are the edges
+def dijkstra_list(adj_list, src):
+    
+    #Initialization
+    dist = {node: sys.maxsize for node in adj_list}
+    visited = set()
+    
+    dist[src] = 0
+    
+    while len(visited) < len(adj_list):
+        cur_node = None
+        min_dist = sys.maxsize
+        
+        for node in adj_list:
+            if node not in visited and dist[node] < min_dist:
+                min_dist = dist[node]
+                cur_node = node
+        
+        if cur_node is None:
+            break
+        
+        visited.add(cur_node)
+        
+        for neighbor, weight in adj_list[cur_node]:
+            new_path_dist = dist[cur_node] + weight
+            if new_path_dist < dist[neighbor]:
+                dist[neighbor] = new_path_dist
+    
+    print(dist)
+        
+  
+    return None
+
+#For adjacency matrix, data supplied as a 2D matrix, each row-column pair being an edge.    
+def dijkstra_matrix(matrix, src):
+    
+    V = len(matrix)
+    dist = [sys.maxsize] * V
+    dist[src] = 0
+    visited = [False] * V
+    
+    for _ in range(V):
+        
+        u = -1
+        for i in range(V):
+            if not visited[i] and (u == -1 or dist[i] < dist[u]):
+                u = i
+        
+        if dist[u] == sys.maxsize: break
+        visited[u] = True
+        
+        for neighbor in range(V):
+            if matrix[u][neighbor] > 0 and not visited[neighbor]:
+                new_dist = dist[u] + matrix[u][neighbor]
+                if new_dist < dist[neighbor]:
+                    dist[neighbor] = new_dist
+    print(dist)
+    return None
+
+
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -56,46 +132,20 @@ edges4 = [('1', '2', 3), ('1', '3', 2), ('1', '4', 6), ('1', '5', 5), ('1', '6',
 list4 = create_adjacency_list(edges4)
 matrix4 = create_adjacency_matrix(edges4)
 
+matrix5 = generate_graph(15)
+
+print(matrix5)
 #-------------------------------------------------------------------------------
-print("Adjacency Lists:")
-print()
 
-for node, neighbors in list1.items():
-    print(f" {node}: {neighbors}")
+dijkstra_list(list1, 'A')
+dijkstra_list(list2, '1')
+dijkstra_list(list3, 'A')
+dijkstra_list(list4, '1')
 
-print()
+dijkstra_matrix(matrix1, 0)
+dijkstra_matrix(matrix1, 1)
+dijkstra_matrix(matrix1, 2)
 
-for node, neighbors in list2.items():
-    print(f" {node}: {neighbors}")
-    
-print()
-
-for node, neighbors in list3.items():
-    print(f" {node}: {neighbors}")
-
-print()
-
-for node, neighbors in list4.items():
-    print(f" {node}: {neighbors}")
-    
-print()
-print("Adjacency Matrices:")
-print()
-
-for row in matrix1:
-    print(row)
-
-print()
-
-for row in matrix2:
-    print(row)
-    
-print()
-
-for row in matrix3:
-    print(row)
-
-print()
-
-for row in matrix4:
-    print(row)
+dijkstra_matrix(matrix2, 0)
+dijkstra_matrix(matrix3, 0)
+dijkstra_matrix(matrix4, 0)
