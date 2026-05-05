@@ -35,13 +35,19 @@ def create_adjacency_matrix(edges):
         matrix[v][u] = weight
     
     return matrix
+
+#Generates a graph via a fixed seed of n nodes, with a 5% chance for any edge to be removed.
+#This creates a dense, non-complete graph.   
+def generate_graph(num_nodes, weight_range=(1, 10), seed = 125):
     
-def generate_graph(num_nodes, weight_range=(1, 10)):
+    rng = np.random.default_rng(seed)
     
-    matrix = np.random.randint(weight_range[0], weight_range[1], size = (num_nodes, num_nodes))
+    matrix = rng.integers(weight_range[0], weight_range[1], size = (num_nodes, num_nodes))
     
+    inf_mask = rng.random(size=(num_nodes, num_nodes)) < 0.05
+    matrix[inf_mask] = sys.maxsize
     
-    matrix = (matrix + matrix.T) // 2
+    matrix = np.maximum(matrix, matrix.T)
     np.fill_diagonal(matrix, 0)
     
     py_matrix = matrix.tolist()
@@ -144,7 +150,7 @@ edges4 = [('1', '2', 3), ('1', '3', 2), ('1', '4', 6), ('1', '5', 5), ('1', '6',
 list4 = create_adjacency_list(edges4)
 matrix4 = create_adjacency_matrix(edges4)
 
-matrix5 = generate_graph(100)
+matrix5 = generate_graph(10)
 list5 = matrix_to_list(matrix5)
 
 #-------------------------------------------------------------------------------
@@ -225,7 +231,30 @@ print(dijkstra_matrix(matrix4, 4))
 print(dijkstra_matrix(matrix4, 5))
 print()
 
-print("Graph 5 is randomized and used solely for time and space analysis")
+print("Results for Graph 5, first 10 nodes, List version:")
+print(dijkstra_list(list5, '1'))
+print(dijkstra_list(list5, '2'))
+print(dijkstra_list(list5, '3'))
+print(dijkstra_list(list5, '4'))
+print(dijkstra_list(list5, '5'))
+print(dijkstra_list(list5, '6'))
+print(dijkstra_list(list5, '7'))
+print(dijkstra_list(list5, '8'))
+print(dijkstra_list(list5, '9'))
+print(dijkstra_list(list5, '10'))
+print()
+
+print("Results for Graph 5, first 10 nodes, Matrix version:")
+print(dijkstra_matrix(matrix5, 0))
+print(dijkstra_matrix(matrix5, 1))
+print(dijkstra_matrix(matrix5, 2))
+print(dijkstra_matrix(matrix5, 3))
+print(dijkstra_matrix(matrix5, 4))
+print(dijkstra_matrix(matrix5, 5))
+print(dijkstra_matrix(matrix5, 6))
+print(dijkstra_matrix(matrix5, 7))
+print(dijkstra_matrix(matrix5, 8))
+print(dijkstra_matrix(matrix5, 9))
 print()
 #-------------------------------------------------------------------------------
 
