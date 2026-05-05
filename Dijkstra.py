@@ -273,16 +273,17 @@ for i in range(5):
 for i in range(5):    
     time10 += timeit.timeit("dijkstra_matrix(matrix5, 0)", globals = globals(), number = 5000)
     
-print(f"Time for List 1: {time1 * 1000} ms")
-print(f"Time for List 2: {time2 * 1000} ms")
-print(f"Time for List 3: {time3 * 1000} ms")
-print(f"Time for List 4: {time4 * 1000} ms")
-print(f"Time for List 5: {time5 * 1000} ms")
-print(f"Time for Matrix 1: {time6 * 1000} ms")
-print(f"Time for Matrix 2: {time7 * 1000} ms")
-print(f"Time for Matrix 3: {time8 * 1000} ms")
-print(f"Time for Matrix 4: {time9 * 1000} ms")
-print(f"Time for Matrix 5: {time10 * 1000} ms")
+print(f"Time for List 1: {(time1 * 1000) / 5} ms")
+print(f"Time for List 2: {(time2 * 1000) / 5} ms")
+print(f"Time for List 3: {(time3 * 1000) / 5} ms")
+print(f"Time for List 4: {(time4 * 1000) / 5} ms")
+print(f"Time for List 5: {(time5 * 1000) / 5} ms")
+print(f"Time for Matrix 1: {(time6 * 1000) / 5} ms")
+print(f"Time for Matrix 2: {(time7 * 1000) / 5} ms")
+print(f"Time for Matrix 3: {(time8 * 1000) / 5} ms")
+print(f"Time for Matrix 4: {(time9 * 1000) / 5} ms")
+print(f"Time for Matrix 5: {(time10 * 1000) / 5} ms")
+print()
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
