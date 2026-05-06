@@ -1,5 +1,7 @@
 # For exiting when poping an empty heap
 import sys
+# For mesuring runtime
+import time
 
 # In the priority queue the heap bubles up the new item by
 def heapPush (heap, item):
@@ -104,13 +106,58 @@ def dijkstra(graph, start):
     return distances, previous
 
 
+if __name__ == "__main__":
 
+    # Below are the hard coded graphs. These graphs are undirected
+    sparseGraph1 = {
+        'A': {'B': 4, 'C': 2},
+        'B': {'A': 4, 'D': 5},
+        'C': {'A': 2, 'D': 1},
+        'D': {'B': 5, 'C': 1, 'E': 3},
+        'E': {'D': 3, 'F': 2},
+        'F': {'E': 2}
+    }
 
-    # For graphs stored like this
-#     graph = {
-#       'A': {'B': 4, 'C': 2},
-#       'B': {'C': 3, 'D': 2, 'E': 3},
-#       'C': {'B': 1, 'D': 4, 'E': 5},
-#       'D': {'E': 1},
-#       'E': {}
-#     }
+    sparseGraph2 = {
+        '1': {'2': 3, '3': 6},
+        '2': {'1': 3, '4': 2, '5': 5},
+        '3': {'1': 6, '5': 4},
+        '4': {'2': 2, '6': 7},
+        '5': {'2': 5, '3': 4, '7': 1},
+        '6': {'4': 7},
+        '7': {'5': 1}
+    }
+
+    denseGraph1 = {
+        'A': {'B': 2, 'C': 5, 'D': 1, 'E': 4},
+        'B': {'A': 2, 'C': 3, 'D': 2, 'E': 6},
+        'C': {'A': 5, 'B': 3, 'D': 3, 'E': 1},
+        'D': {'A': 1, 'B': 2, 'C': 3, 'E': 2},
+        'E': {'A': 4, 'B': 6, 'C': 1, 'D': 2}
+    }
+
+    denseGraph2 = {
+        '1': {'2': 3, '3': 2, '4': 6, '5': 5, '6': 4},
+        '2': {'1': 3, '3': 1, '4': 2, '5': 4, '6': 7},
+        '3': {'1': 2, '2': 1, '4': 3, '5': 6, '6': 5},
+        '4': {'1': 6, '2': 2, '3': 3, '5': 2, '6': 4},
+        '5': {'1': 5, '2': 4, '3': 6, '4': 2, '6': 1},
+        '6': {'1': 4, '2': 7, '3': 5, '4': 4, '5': 1}
+    }
+
+    # Run and print the results of the algorithm
+    distances, previous = dijkstra(sparseGraph1, 'A')
+    print("Sparse graph 1")
+    print("Distances: ", distances, "\nPrevious: ", previous)
+
+    distances, previous = dijkstra(sparseGraph2, '1')
+    print("\nSparse graph 2")
+    print("Distances: ", distances, "\nPrevious: ", previous)
+
+    distances, previous = dijkstra(denseGraph1, 'A')
+    print("\nDense graph 1")
+    print("Distances: ", distances, "\nPrevious: ", previous)
+
+    distances, previous = dijkstra(denseGraph2, '1')
+    print("\nDense graph 2")
+    print("Distances: ",  distances, "\nPrevious: ", previous)
