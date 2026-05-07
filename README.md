@@ -13,6 +13,3 @@ py .\\DijkstraMinHeap.py
 Needed dependencies: (this command can be run in the windows cmd)
 pip install numpy
 
-
-&#x20;
-
