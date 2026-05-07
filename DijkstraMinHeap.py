@@ -2,6 +2,10 @@
 import sys
 # For mesuring runtime
 import time
+# For creating random numbers
+import numpy as np
+# For keeping track of how much memory is being used
+import tracemalloc
 
 # In the priority queue the heap bubles up the new item by
 def heapPush (heap, item):
@@ -105,6 +109,57 @@ def dijkstra(graph, start):
 
     return distances, previous
 
+# From Dijkstra.py. Copied this so we could both use the same fixed 
+# seed to do the comparison on the 3rd dense algorithm
+def generate_graph(num_nodes, weight_range=(1, 10), seed = 125):
+    
+    rng = np.random.default_rng(seed)
+    
+    matrix = rng.integers(weight_range[0], weight_range[1], size = (num_nodes, num_nodes))
+    
+    inf_mask = rng.random(size=(num_nodes, num_nodes)) < 0.05
+    matrix[inf_mask] = sys.maxsize
+    
+    matrix = np.maximum(matrix, matrix.T)
+    np.fill_diagonal(matrix, 0)
+    
+    py_matrix = matrix.tolist()
+    
+    return py_matrix
+
+# Function to find the average runtime
+def averageRuntime(graph, start):
+    times = []
+    for _ in range(5):
+        startTime = time.perf_counter()
+        dijkstra(graph, start)
+        times.append(time.perf_counter() - startTime)
+    # Get the average and convert it into milliseconds
+    return sum(times) / len(times) * 1000
+
+# This function is used to find out the peak amount of 
+# memory used in this implementation of Dijkstra's Algorithm
+def peakMemory(graph, start):
+    tracemalloc.start()
+    dijkstra(graph, start)
+    currentMemory, peakMemory = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    return peakMemory
+
+# Turns an adjacency matrix into a dictionary to be used in this 
+# programs Dijkstra's Algorithm
+def matrixToDictionary (matrix):
+    graph = {}
+    # Gets each row and the contents in those rows
+    for i, row in enumerate(matrix):
+        # get the node number for that row
+        node = str(i + 1)
+        graph[node] = {}
+        for j, length in enumerate(row):
+            # Don't create the diagonal
+            if i != j and length != sys.maxsize:
+                graph[node][str(j + 1)] = length
+    return graph
 
 if __name__ == "__main__":
 
@@ -145,7 +200,14 @@ if __name__ == "__main__":
         '6': {'1': 4, '2': 7, '3': 5, '4': 4, '5': 1}
     }
 
-    # Run and print the results of the algorithm
+    # Create a matrix graph 
+    # (the same as was done in the array implementation for comparison purposes)
+    matrix = generate_graph(10)
+    # Convert it so it can be used in this programs Dijkstra's Algorithm
+    denseGraph3 = matrixToDictionary(matrix)
+
+
+    # Run all the graphs and print the shortest lengths
     distances, previous = dijkstra(sparseGraph1, 'A')
     print("Sparse graph 1")
     print("Distances: ", distances, "\nPrevious: ", previous)
@@ -161,3 +223,24 @@ if __name__ == "__main__":
     distances, previous = dijkstra(denseGraph2, '1')
     print("\nDense graph 2")
     print("Distances: ",  distances, "\nPrevious: ", previous)
+
+
+    distances, previous = dijkstra(denseGraph3, '1')
+    print("\nDense graph 3")
+    print("Distances: ",  distances, "\nPrevious: ", previous)  
+
+    # Run and print out the average runtimes
+    print("\nAverage runtimes:")
+    print(f"Sparse graph 1: {averageRuntime(sparseGraph1, 'A'):.6f} ms")
+    print(f"Sparse graph 2: {averageRuntime(sparseGraph2, '1'):.6f} ms")
+    print(f"Dense graph 1:  {averageRuntime(denseGraph1, 'A'):.6f} ms")
+    print(f"Dense graph 2:  {averageRuntime(denseGraph2, '1'):.6f} ms")
+    print(f"Dense graph 3:  {averageRuntime(denseGraph3, '1'):.6f} ms")
+
+    # Run and pring out the amount of memory used
+    print("\nPeak memory usage:")
+    print(f"Sparse graph 1: {peakMemory(sparseGraph1, 'A')} bytes")
+    print(f"Sparse graph 2: {peakMemory(sparseGraph2, '1')} bytes")
+    print(f"Dense graph 1:  {peakMemory(denseGraph1, 'A')} bytes")
+    print(f"Dense graph 2:  {peakMemory(denseGraph2, '1')} bytes")
+    print(f"Dense graph 3:  {peakMemory(denseGraph3, '1')} bytes")
